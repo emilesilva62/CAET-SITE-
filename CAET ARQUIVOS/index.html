@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Centro de Apoio ao Estudante Técnico - Educação técnica acessível e inovadora.">
+    <meta name="author" content="CAET">
+    <title>CAET - Centro de Apoio ao Estudante Técnico</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>CAET</h1>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="#home" class="nav-link" onclick="showSection('home')">Início</a></li>
+                    <li><a href="#quem-somos" class="nav-link" onclick="showSection('quem-somos')">Quem Somos</a></li>
+                    <li><a href="#biografia" class="nav-link" onclick="showSection('biografia')">Biografia</a></li>
+                    <li><a href="#localizacao" class="nav-link" onclick="showSection('localizacao')">Onde Estamos</a></li>
+                    <li><a href="#app" class="nav-link" onclick="showSection('app')">Área do Usuário</a></li>
+                </ul>
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="section active">
+            <div class="container">
+                <div class="hero">
+                    <h1>Bem-vindo ao CAET</h1>
+                    <p class="subtitle">Educação técnica acessível e inovadora para todos.</p>
+                    <a href="#app" class="btn primary" onclick="showSection('app')">Acessar Agora</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="quem-somos" class="section">
+            <div class="container">
+                <h2>Quem Somos</h2>
+                <p>Fundado em 2020, o CAET é uma iniciativa que busca transformar a educação técnica através de recursos online acessíveis. Nossa missão é apoiar estudantes com ferramentas inovadoras.</p>
+                <div class="mission">
+                    <div class="mission-item">
+                        <h3>Missão</h3>
+                        <p>Oferecer suporte educacional gratuito e interativo.</p>
+                    </div>
+                    <div class="mission-item">
+                        <h3>Visão</h3>
+                        <p>Ser líder em educação técnica online no Brasil.</p>
+                    </div>
+                    <div class="mission-item">
+                        <h3>Valores</h3>
+                        <p>Inovação, Inclusão, Excelência.</p>
+                    </div>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150?text=João" alt="João Silva">
+                        <h3>João Silva</h3>
+                        <p>CEO & Fundador</p>
+                    </div>
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150?text=Maria" alt="Maria Oliveira">
+                        <h3>Maria Oliveira</h3>
+                        <p>Desenvolvedora</p>
+                    </div>
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/150?text=Pedro" alt="Pedro Santos">
+                        <h3>Pedro Santos</h3>
+                        <p>Educador</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="biografia" class="section">
+            <div class="container">
+                <h2>Biografia do Fundador</h2>
+                <p>João Silva, engenheiro eletricista formado pela USP, fundou o CAET em 2020 após 15 anos na educação técnica. Com experiência na Petrobras e SENAI, ele revolucionou o ensino remoto.</p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-year">2003</span>
+                        <p>Graduação - USP</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-year">2010</span>
+                        <p>Professor na SENAI</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-year">2020</span>
+                        <p>Fundação do CAET</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-year">2025</span>
+                        <p>10.000 usuários ativos</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="localizacao" class="section">
+            <div class="container">
+                <h2>Onde Estamos</h2>
+                <p>Localizados em São Paulo, oferecemos suporte online e eventos presenciais.</p>
+                <div id="map" class="map"></div>
+                <div class="contact-details">
+                    <p><strong>Endereço:</strong> Rua Exemplo, 123, Centro - SP, 01000-000</p>
+                    <p><strong>Telefone:</strong> (11) 1234-5678</p>
+                    <p><strong>Email:</strong> contato@caet.com.br</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="app" class="section">
+            <div class="container">
+                <h2>Área do Usuário</h2>
+                <p>Gerencie sua conta e acesse recursos exclusivos.</p>
+                <div class="tabs">
+                    <ul class="tab-nav">
+                        <li><a href="#login" class="tab-link" onclick="showTab('login')">Login</a></li>
+                        <li><a href="#register" class="tab-link" onclick="showTab('register')">Cadastro</a></li>
+                        <li><a href="#upload" class="tab-link" onclick="showTab('upload')">Upload</a></li>
+                        <li><a href="#forgot" class="tab-link" onclick="showTab('forgot')">Recuperar Senha</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="login" class="tab-panel active">
+                            <h3>Login</h3>
+                            <form id="login-form" class="form">
+                                <div class="form-group">
+                                    <label for="login-email">Email</label>
+                                    <input type="email" id="login-email" placeholder="Digite seu email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="login-password">Senha</label>
+                                    <input type="password" id="login-password" placeholder="Digite sua senha" required>
+                                </div>
+                                <input type="hidden" id="csrf-token-login" name="csrf_token">
+                                <button type="submit" class="btn primary">Entrar</button>
+                                <div id="g_id_onload_login"
+                                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                                     data-login_uri="http://localhost"
+                                     data-auto_prompt="false">
+                                </div>
+                                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular"></div>
+                            </form>
+                        </div>
+                        <div id="register" class="tab-panel">
+                            <h3>Cadastro</h3>
+                            <form id="register-form" class="form">
+                                <div class="form-group">
+                                    <label for="register-name">Nome Completo</label>
+                                    <input type="text" id="register-name" placeholder="Digite seu nome" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="register-email">Email</label>
+                                    <input type="email" id="register-email" placeholder="Digite seu email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="register-password">Senha</label>
+                                    <input type="password" id="register-password" placeholder="Digite uma senha" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="register-confirm-password">Confirmar Senha</label>
+                                    <input type="password" id="register-confirm-password" placeholder="Confirme sua senha" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="register-dob">Data de Nascimento</label>
+                                    <input type="date" id="register-dob" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="register-phone">Telefone</label>
+                                    <input type="tel" id="register-phone" placeholder="Digite seu telefone" required>
+                                </div>
+                                <input type="hidden" id="csrf-token-register" name="csrf_token">
+                                <button type="submit" class="btn primary">Cadastrar</button>
+                                <div id="g_id_onload_register"
+                                     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                                     data-login_uri="http://localhost"
+                                     data-auto_prompt="false">
+                                </div>
+                                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_up_with" data-shape="rectangular"></div>
+                            </form>
+                        </div>
+                        <div id="upload" class="tab-panel">
+                            <h3>Upload de Arquivos</h3>
+                            <form id="upload-form" class="form" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="upload-file">Selecione Arquivos</label>
+                                    <input type="file" id="upload-file" name="files" multiple accept="image/*,.pdf,.doc,.docx">
+                                </div>
+                                <div id="preview" class="preview"></div>
+                                <input type="hidden" id="csrf-token-upload" name="csrf_token">
+                                <button type="submit" class="btn primary">Enviar</button>
+                            </form>
+                        </div>
+                        <div id="forgot" class="tab-panel">
+                            <h3>Recuperar Senha</h3>
+                            <form id="forgot-form" class="form">
+                                <div class="form-group">
+                                    <label for="forgot-email">Email</label>
+                                    <input type="email" id="forgot-email" placeholder="Digite seu email" required>
+                                </div>
+                                <input type="hidden" id="csrf-token-forgot" name="csrf_token">
+                                <button type="submit" class="btn primary">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CAET. Todos os direitos reservados. | <a href="#contact">Contato</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
