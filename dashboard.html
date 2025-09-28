@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Painel do Usuário - Centro de Apoio ao Estudante Técnico">
+    <meta name="author" content="CAET">
+    <title>CAET - Painel do Usuário</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>CAET</h1>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="#dashboard" class="nav-link" onclick="showSection('dashboard')">Painel</a></li>
+                    <li><a href="#profile" class="nav-link" onclick="showSection('profile')">Perfil</a></li>
+                    <li><a href="#files" class="nav-link" onclick="showSection('files')">Arquivos</a></li>
+                    <li><a href="#resources" class="nav-link" onclick="showSection('resources')">Recursos Educacionais</a></li>
+                    <li><a href="#" class="nav-link" onclick="logout()">Sair</a></li>
+                </ul>
+                <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <h2>Bem-vindo ao seu Painel</h2>
+                <p class="subtitle">Gerencie sua conta, acesse seus arquivos e explore recursos educacionais.</p>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Perfil</h3>
+                        <p>Atualize suas informações pessoais.</p>
+                        <a href="#profile" class="btn primary" onclick="showSection('profile')">Editar Perfil</a>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Arquivos</h3>
+                        <p>Veja e gerencie seus arquivos enviados.</p>
+                        <a href="#files" class="btn primary" onclick="showSection('files')">Ver Arquivos</a>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Recursos</h3>
+                        <p>Acesse materiais educacionais exclusivos.</p>
+                        <a href="#resources" class="btn primary" onclick="showSection('resources')">Explorar Recursos</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile" class="section">
+            <div class="container">
+                <h2>Perfil do Usuário</h2>
+                <form id="profile-form" class="form">
+                    <div class="form-group">
+                        <label for="profile-name">Nome Completo</label>
+                        <input type="text" id="profile-name" placeholder="Digite seu nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-email">Email</label>
+                        <input type="email" id="profile-email" placeholder="Digite seu email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-phone">Telefone</label>
+                        <input type="tel" id="profile-phone" placeholder="Digite seu telefone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-dob">Data de Nascimento</label>
+                        <input type="date" id="profile-dob" required>
+                    </div>
+                    <input type="hidden" id="csrf-token-profile" name="csrf_token">
+                    <button type="submit" class="btn primary">Salvar Alterações</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="files" class="section">
+            <div class="container">
+                <h2>Seus Arquivos</h2>
+                <p>Visualize e gerencie os arquivos que você enviou.</p>
+                <div id="file-list" class="file-grid"></div>
+            </div>
+        </section>
+
+        <section id="resources" class="section">
+            <div class="container">
+                <h2>Recursos Educacionais</h2>
+                <p>Acesse materiais e cursos exclusivos para seu aprendizado técnico.</p>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <h3>Curso de Eletrônica Básica</h3>
+                        <p>Aprenda os fundamentos da eletrônica com nosso curso interativo.</p>
+                        <a href="#" class="btn primary">Acessar Curso</a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>Guia de Programação</h3>
+                        <p>Explore conceitos de programação com exemplos práticos.</p>
+                        <a href="#" class="btn primary">Ver Guia</a>
+                    </div>
+                    <div class="resource-card">
+                        <h3>Vídeos Tutoriais</h3>
+                        <p>Assista a tutoriais práticos sobre temas técnicos.</p>
+                        <a href="#" class="btn primary">Assistir Agora</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CAET. Todos os direitos reservados. | <a href="#contact">Contato</a></p>
+        </div>
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

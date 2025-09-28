@@ -1,16 +1,18 @@
-// script.js
 document.addEventListener('DOMContentLoaded', () => {
-    showSection('home');
-    showTab('login');
-
-    // Form handlers
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
-    document.getElementById('register-form').addEventListener('submit', handleRegister);
-    document.getElementById('upload-form').addEventListener('submit', handleUpload);
-    document.getElementById('forgot-form').addEventListener('submit', handleForgotPassword);
-
-    // Preview de arquivos
-    document.getElementById('upload-file').addEventListener('change', handlePreview);
+    if (document.getElementById('dashboard')) {
+        showSection('dashboard');
+        loadUserProfile();
+        loadUserFiles();
+        document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
+    } else {
+        showSection('home');
+        showTab('login');
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
+        document.getElementById('register-form').addEventListener('submit', handleRegister);
+        document.getElementById('upload-form').addEventListener('submit', handleUpload);
+        document.getElementById('forgot-form').addEventListener('submit', handleForgotPassword);
+        document.getElementById('upload-file').addEventListener('change', handlePreview);
+    }
 });
 
 function showSection(sectionId) {
@@ -36,6 +38,13 @@ function validateEmail(email) {
 
 function sanitizeInput(input) {
     return input.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function showError(formId, errorDiv) {
+    const form = document.getElementById(formId);
+    const existingError = form.querySelector('.error');
+    if (existingError) existingError.remove();
+    form.appendChild(errorDiv);
 }
 
 function handleLogin(event) {
@@ -72,7 +81,7 @@ function handleLogin(event) {
     .then(data => {
         if (data.success) {
             alert('Login bem-sucedido!');
-            // Redirecionar ou atualizar UI
+            window.location.href = '/dashboard';
         } else {
             errorDiv.textContent = data.message || 'Erro no login.';
             showError('login-form', errorDiv);
@@ -233,6 +242,9 @@ function handleUpload(event) {
         if (data.success) {
             alert(`Upload de ${files.length} arquivo(s) bem-sucedido!`);
             document.getElementById('upload-form').reset();
+            if (window.location.pathname === '/dashboard') {
+                loadUserFiles();
+            }
         } else {
             errorDiv.textContent = data.message || 'Erro no upload.';
             showError('upload-form', errorDiv);
@@ -267,17 +279,25 @@ function handlePreview(event) {
     }
 }
 
-function showError(formId, errorDiv) {
-    const form = document.getElementById(formId);
-    const existingError = form.querySelector('.error');
-    if (existingError) existingError.remove();
-    form.appendChild(errorDiv);
-}
-
 function handleGoogleSignIn(response) {
     if (response.credential) {
-        alert('Login com Google bem-sucedido! Token: ' + response.credential);
-        // Enviar token para backend
+        fetch('/google-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: response.credential })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Login com Google bem-sucedido!');
+                window.location.href = '/dashboard';
+            } else {
+                alert('Erro no login com Google: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Erro ao conectar com o servidor.');
+        });
     }
 }
 
@@ -297,11 +317,153 @@ function initMap() {
     new google.maps.Marker({ position: location, map, title: 'CAET - São Paulo' });
 }
 
-window.onload = () => {
-    google.accounts.id.initialize({
-        client_id: "YOUR_GOOGLE_CLIENT_ID",
-        callback: handleGoogleSignIn
+function loadUserProfile() {
+    fetch('/profile', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('profile-name').value = data.user.name;
+            document.getElementById('profile-email').value = data.user.email;
+            document.getElementById('profile-phone').value = data.user.phone;
+            document.getElementById('profile-dob').value = data.user.dob;
+        } else {
+            alert('Erro ao carregar perfil: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao conectar com o servidor.');
     });
-    google.accounts.id.renderButton(document.querySelector('#g_id_onload_login'), { theme: 'outline', size: 'large' });
-    google.accounts.id.renderButton(document.querySelector('#g_id_onload_register'), { theme: 'outline', size: 'large', text: 'signup_with' });
+}
+
+function handleProfileUpdate(event) {
+    event.preventDefault();
+    const name = sanitizeInput(document.getElementById('profile-name').value.trim());
+    const phone = sanitizeInput(document.getElementById('profile-phone').value.trim());
+    const dob = document.getElementById('profile-dob').value;
+    const csrfToken = document.getElementById('csrf-token-profile').value;
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error';
+    errorDiv.style.color = 'red';
+    errorDiv.style.marginTop = '0.5rem';
+
+    if (!name) {
+        errorDiv.textContent = 'Por favor, insira seu nome.';
+        showError('profile-form', errorDiv);
+        return;
+    }
+    if (!dob) {
+        errorDiv.textContent = 'Por favor, selecione sua data de nascimento.';
+        showError('profile-form', errorDiv);
+        return;
+    }
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
+    if (age < 13) {
+        errorDiv.textContent = 'Você deve ter pelo menos 13 anos.';
+        showError('profile-form', errorDiv);
+        return;
+    }
+    if (!phone) {
+        errorDiv.textContent = 'Por favor, insira um telefone.';
+        showError('profile-form', errorDiv);
+        return;
+    }
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (!/^\d{10,11}$/.test(cleanPhone)) {
+        errorDiv.textContent = 'Por favor, insira um telefone válido (10-11 dígitos).';
+        showError('profile-form', errorDiv);
+        return;
+    }
+
+    fetch('/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, dob, csrf_token: csrfToken })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Perfil atualizado com sucesso!');
+        } else {
+            errorDiv.textContent = data.message || 'Erro ao atualizar perfil.';
+            showError('profile-form', errorDiv);
+        }
+    })
+    .catch(error => {
+        errorDiv.textContent = 'Erro ao conectar com o servidor.';
+        showError('profile-form', errorDiv);
+    });
+}
+
+function loadUserFiles() {
+    fetch('/files', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+        if (data.success && data.files.length) {
+            data.files.forEach(file => {
+                const fileCard = document.createElement('div');
+                fileCard.className = 'file-card';
+                if (file.type.startsWith('image/')) {
+                    fileCard.innerHTML = `
+                        <img src="/uploads/${file.name}" alt="${file.name}">
+                        <p>${file.name}</p>
+                        <a href="/Uploads/${file.name}" download>Baixar</a>
+                    `;
+                } else {
+                    fileCard.innerHTML = `
+                        <p>${file.name}</p>
+                        <a href="/Uploads/${file.name}" download>Baixar</a>
+                    `;
+                }
+                fileList.appendChild(fileCard);
+            });
+        } else {
+            fileList.innerHTML = '<p>Nenhum arquivo encontrado.</p>';
+        }
+    })
+    .catch(error => {
+        alert('Erro ao carregar arquivos.');
+    });
+}
+
+function logout() {
+    fetch('/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ csrf_token: 'mock-csrf-token' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Logout bem-sucedido!');
+            window.location.href = '/';
+        } else {
+            alert('Erro ao fazer logout: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Erro ao conectar com o servidor.');
+    });
+}
+
+window.onload = () => {
+    if (document.getElementById('g_id_onload_login')) {
+        google.accounts.id.initialize({
+            client_id: "YOUR_GOOGLE_CLIENT_ID",
+            callback: handleGoogleSignIn
+        });
+        google.accounts.id.renderButton(document.querySelector('#g_id_onload_login'), { theme: 'outline', size: 'large' });
+        google.accounts.id.renderButton(document.querySelector('#g_id_onload_register'), { theme: 'outline', size: 'large', text: 'signup_with' });
+    }
 };
